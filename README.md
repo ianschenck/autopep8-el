@@ -1,12 +1,20 @@
 # autopep8-el
 autopep8 emacs integration
 
-A day working in [Go](golang.org) will cause anyone to miss `gofmt`
-severely. [autopep8](https://pypi.python.org/pypi/autopep8/) provides
-somewhat similar functionality for python programmers. The only part
-missing was integration into the greatest editor of all time.
+A day working in [Go](http://golang.org) will cause anyone to miss
+`gofmt` severely. [autopep8](https://pypi.python.org/pypi/autopep8/)
+provides somewhat similar functionality for python programmers. The
+only part missing was integration into the greatest editor of all
+time.
 
 ## Usage
+
+Install autopep8 somewhere. There is a customization available to
+change the path to autopep8 and aggressiveness if need be:
+
+```
+M-x customize-group RET autopep8
+```
 
 Drop autopep8.el somewhere in your loadpath. Require it and bind
 autopep8 to anything you might find useful. I have it bound to `C-c
