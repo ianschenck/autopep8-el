@@ -32,7 +32,7 @@ If you want to autopep8 on save, you'll need to use
 `autopep8-before-save` to guard against non-python major modes:
 
 ```
-(add-hook 'before-save-hook #autopep8-before-save)
+(add-hook 'before-save-hook #'autopep8-before-save)
 ```
 
 ## Credit
