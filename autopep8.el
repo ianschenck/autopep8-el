@@ -57,6 +57,11 @@
   :options '(0 1 2)
   :group 'autopep8)
 
+(defcustom autopep8-line-length 79
+  "The maximum line length."
+  :type 'integer
+  :group 'autopep8)
+
 (defun autopep8-before-save ()
   "Apply autopep8 to any python buffer before saving."
   (interactive)
@@ -138,7 +143,7 @@ buffer."
 
 (defun autopep8--commandline (errbuf tmpfile)
   ;; Build the autopep8 commandline.
-  `(,autopep8-command nil ,errbuf nil ,@(make-list autopep8-aggressive "--aggressive") "--in-place" ,tmpfile)
+  `(,autopep8-command nil ,errbuf nil ,@(make-list autopep8-aggressive "--aggressive") "--max-line-length" ,(number-to-string autopep8-line-length) "--in-place" ,tmpfile)
   )
 
 (defun autopep8--goto-line (line)
