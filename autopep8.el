@@ -41,6 +41,7 @@
 ;;   (local-set-key (kbd "C-c C-p") 'autopep8))
 ;; (add-hook 'python-mode-hook 'python-mode-keys)
 ;; 
+(require 'cl)
 
 (defgroup autopep8 nil
   "autopep8 for python"
@@ -151,15 +152,30 @@ buffer."
   (forward-line (1- line)))
 
 (defun autopep8--delete-whole-line (&optional arg)
-  ;; Emacs uses both kill-region and kill-new, Xemacs only uses
-  ;; kill-region. In both cases we turn them into operations that do
-  ;; not modify the kill ring. This solution does depend on the
-  ;; implementation of kill-line, but it's the only viable solution
-  ;; that does not require to write kill-line from scratch.
-  (flet ((kill-region (beg end)
-                      (delete-region beg end))
-         (kill-new (s) ()))
-    (go--kill-whole-line arg)))
+  "Delete the current line without putting it in the `kill-ring'.
+Derived from function `kill-whole-line'.  ARG is defined as for that
+function."
+  (setq arg (or arg 1))
+  (if (and (> arg 0)
+           (eobp)
+           (save-excursion (forward-visible-line 0) (eobp)))
+      (signal 'end-of-buffer nil))
+  (if (and (< arg 0)
+           (bobp)
+           (save-excursion (end-of-visible-line) (bobp)))
+      (signal 'beginning-of-buffer nil))
+  (cond ((zerop arg)
+         (delete-region (progn (forward-visible-line 0) (point))
+                        (progn (end-of-visible-line) (point))))
+        ((< arg 0)
+         (delete-region (progn (end-of-visible-line) (point))
+                        (progn (forward-visible-line (1+ arg))
+                               (unless (bobp)
+                                 (backward-char))
+                               (point))))
+        (t
+         (delete-region (progn (forward-visible-line 0) (point))
+                        (progn (forward-visible-line arg) (point))))))
 
 (defun autopep8--process-errors (filename tmpfile errbuf)
   ;; Convert the autopep8 stderr to something understood by the compilation mode.
